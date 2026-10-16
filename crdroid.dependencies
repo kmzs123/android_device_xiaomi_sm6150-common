@@ -1,11 +1,12 @@
 [
   {
-    "repository": "crdroidandroid/android_kernel_xiaomi_sm6150",
+    "repository": "kmzs123/android_kernel_xiaomi_sm6150",
     "target_path": "kernel/xiaomi/sm6150",
-    "branch": "16.0-phoenix"
+    "branch": "17.0-phoenix"
   },
   {
-    "repository": "crdroidandroid/android_hardware_xiaomi",
-    "target_path": "hardware/xiaomi"
+    "repository": "kmzs123/android_hardware_xiaomi",
+    "target_path": "hardware/xiaomi",
+    "branch": "17.0"
   }
 ]
