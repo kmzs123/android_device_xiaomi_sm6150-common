@@ -44,6 +44,10 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
 TARGET_BOOTLOADER_BOARD_NAME := sm6150
 TARGET_NO_BOOTLOADER := true
 
+# Camera
+MALLOC_SVELTE := true
+MALLOC_SVELTE_FOR_LIBC32 := true
+
 # Filesystem
 TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/configs/config.fs
 
@@ -70,7 +74,7 @@ TARGET_KERNEL_SOURCE := kernel/xiaomi/sm6150
 TARGET_KERNEL_CONFIG := vendor/sdmsteppe-perf_defconfig
 
 BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x880000
-BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom androidboot.console=ttyMSM0
+BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1
 BOARD_KERNEL_CMDLINE += service_locator.enable=1
 BOARD_KERNEL_CMDLINE += lpm_levels.sleep_disabled=1
 BOARD_KERNEL_CMDLINE += loop.max_part=7
@@ -85,22 +89,25 @@ BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 
+SSI_PARTITIONS := product system system_ext
+TREBLE_PARTITIONS := odm vendor
+ALL_PARTITIONS := $(SSI_PARTITIONS) $(TREBLE_PARTITIONS)
+
+$(foreach p, $(call to-upper, $(SSI_PARTITIONS)), \
+    $(eval BOARD_$(p)IMAGE_FILE_SYSTEM_TYPE := ext4))
+
+$(foreach p, $(call to-upper, $(TREBLE_PARTITIONS)), \
+    $(eval BOARD_$(p)IMAGE_FILE_SYSTEM_TYPE := erofs))
+
+$(foreach p, $(call to-upper, $(ALL_PARTITIONS)), \
+    $(eval TARGET_COPY_OUT_$(p) := $(call to-lower, $(p))))
+
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_ext vendor
+BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := $(ALL_PARTITIONS)
 
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 
 BOARD_USES_METADATA_PARTITION := true
-
-TARGET_COPY_OUT_ODM := odm
-TARGET_COPY_OUT_PRODUCT := product
-TARGET_COPY_OUT_SYSTEM_EXT := system_ext
-TARGET_COPY_OUT_VENDOR := vendor
 
 # Platform
 TARGET_BOARD_PLATFORM := sm6150
@@ -130,6 +137,7 @@ TARGET_RELEASETOOLS_EXTENSIONS := $(COMMON_PATH)
 
 # Sepolicy
 TARGET_SEPOLICY_DIR := msmsteppe
+include device/lineage/sepolicy/libion/sepolicy.mk
 include device/lineage/sepolicy/libperfmgr/sepolicy.mk
 include device/qcom/sepolicy_vndr/SEPolicy.mk
 

@@ -198,12 +198,54 @@
 
     <!-- Default list of files pinned by the Pinner Service -->
     <string-array translatable="false" name="config_defaultPinnerServiceFiles">
-        <item>"/system/framework/framework.jar"</item>
-        <item>"/system/framework/services.jar"</item>
-        <item>"/apex/com.android.art/javalib/core-oj.jar"</item>
         <item>"/apex/com.android.art/javalib/core-libart.jar"</item>
+        <item>"/apex/com.android.art/javalib/core-oj.jar"</item>
         <item>"/system_ext/priv-app/SystemUI/SystemUI.apk"</item>
         <item>"/system/bin/surfaceflinger"</item>
+        <item>"/system/framework/boot-framework.vdex"</item>
+        <item>"/system/framework/ext.jar"</item>
+        <item>"/system/framework/framework-res.apk"</item>
+        <item>"/system/framework/framework.jar"</item>
+        <item>"/system/framework/services.jar"</item>
+        <item>"/system/framework/telephony-common.jar"</item>
+        <item>"/system/lib/libEGL.so"</item>
+        <item>"/system/lib/libGLESv1_CM.so"</item>
+        <item>"/system/lib/libGLESv2.so"</item>
+        <item>"/system/lib/libGLESv3.so"</item>
+        <item>"/system/lib/libgui.so"</item>
+        <item>"/system/lib/libhwui.so"</item>
+        <item>"/system/lib/libui.so"</item>
+        <item>"/system/lib/libvulkan.so"</item>
+        <item>"/system/lib64/libEGL.so"</item>
+        <item>"/system/lib64/libGLESv1_CM.so"</item>
+        <item>"/system/lib64/libGLESv2.so"</item>
+        <item>"/system/lib64/libGLESv3.so"</item>
+        <item>"/system/lib64/libgui.so"</item>
+        <item>"/system/lib64/libhwui.so"</item>
+        <item>"/system/lib64/libui.so"</item>
+        <item>"/system/lib64/libvulkan.so"</item>
+        <item>"/vendor/lib/egl/eglSubDriverAndroid.so"</item>
+        <item>"/vendor/lib/egl/libEGL_adreno.so"</item>
+        <item>"/vendor/lib/egl/libGLESv1_CM_adreno.so"</item>
+        <item>"/vendor/lib/egl/libGLESv2_adreno.so"</item>
+        <item>"/vendor/lib/hw/vulkan.adreno.so"</item>
+        <item>"/vendor/lib/libCB.so"</item>
+        <item>"/vendor/lib/libOpenCL.so"</item>
+        <item>"/vendor/lib/libadreno_utils.so"</item>
+        <item>"/vendor/lib/libgsl.so"</item>
+        <item>"/vendor/lib/libllvm-glnext.so"</item>
+        <item>"/vendor/lib/libllvm-qcom.so"</item>
+        <item>"/vendor/lib64/egl/eglSubDriverAndroid.so"</item>
+        <item>"/vendor/lib64/egl/libEGL_adreno.so"</item>
+        <item>"/vendor/lib64/egl/libGLESv1_CM_adreno.so"</item>
+        <item>"/vendor/lib64/egl/libGLESv2_adreno.so"</item>
+        <item>"/vendor/lib64/hw/vulkan.adreno.so"</item>
+        <item>"/vendor/lib64/libCB.so"</item>
+        <item>"/vendor/lib64/libOpenCL.so"</item>
+        <item>"/vendor/lib64/libadreno_utils.so"</item>
+        <item>"/vendor/lib64/libgsl.so"</item>
+        <item>"/vendor/lib64/libllvm-glnext.so"</item>
+        <item>"/vendor/lib64/libllvm-qcom.so"</item>
     </string-array>
 
     <!-- Bytes that the PinnerService will pin for Home app -->
@@ -219,6 +261,7 @@
     <integer-array name="config_availableColorModes">
         <item>0</item> <!-- COLOR_MODE_NATURAL -->
         <item>1</item> <!-- COLOR_MODE_BOOSTED -->
+        <item>2</item> <!-- COLOR_MODE_SATURATED -->
         <item>3</item> <!-- COLOR_MODE_AUTOMATIC -->
     </integer-array>
 
@@ -251,10 +294,34 @@
         <item>0</item> <!-- COLOR_MODE_DEFAULT    -->
     </integer-array>
 
-    <!-- Enable Zram writeback feature to allow unused pages in zram be written to flash. -->
-    <bool name="config_zramWriteback">true</bool>
-
     <!-- Whether WM DisplayContent supports high performance transitions
          (lower-end devices may want to disable) -->
     <bool name="config_deviceSupportsHighPerfTransitions">false</bool>
+
+    <!-- Whether doze feature is enabled by default in settings -->
+    <bool name="config_doze_enabled_by_default">true</bool>
+
+    <!-- Whether device supports sensor based doze customizations -->
+    <bool name="config_dozePulsePickup">true</bool>
+    <bool name="config_dozePulseTilt">true</bool>
+
+    <!-- Whether device has turbo power charging support -->
+    <bool name="config_hasTurboPowerCharger">true</bool>
+
+    <!-- Path to fast charging status file to detect whether an oem fast charger is active -->
+    <string name="config_oemFastChargerStatusPath" translatable="false">/sys/class/power_supply/bms/fastcharge_mode</string>
+
+    <!-- Flag indicating whether the surfaceflinger has limited
+         alpha compositing functionality in hardware.  If set, the window
+         manager will disable alpha trasformation in animations where not
+         strictly needed. -->
+    <bool name="config_sf_limitedAlpha">true</bool>
+
+    <!-- Whether the new Auto Selection Network UI should be shown -->
+    <bool name="config_enableNewAutoSelectNetworkUI">true</bool>
+
+    <!-- Enables or disables haptic effect when the text insertion/selection handle is moved
+         manually by the user. Off by default, since the expected haptic feedback may not be
+         available on some devices. -->
+    <bool name="config_enableHapticTextHandle">true</bool>
 </resources>

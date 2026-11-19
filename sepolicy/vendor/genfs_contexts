@@ -17,6 +17,9 @@ genfscon sysfs /devices/platform/soc/ae00000.qcom,mdss_mdp/idle_timeout_ms      
 # ds28e16 battery verify
 genfscon sysfs /devices/platform/soc/soc:maxim_ds28e16/power_supply/batt_verify u:object_r:vendor_sysfs_battery_supply:s0
 
+# Extcon
+genfscon sysfs /devices/platform/vendor/vendor:extcon_usb1/extcon                    u:object_r:sysfs_extcon:s0
+
 # Fingerprint
 genfscon sysfs /devices/platform/soc/soc:fingerprint_fpc/compatible_all         u:object_r:vendor_sysfs_fingerprint:s0
 genfscon sysfs /devices/platform/soc/soc:fingerprint_fpc/device_prepare         u:object_r:vendor_sysfs_fingerprint:s0
@@ -26,10 +29,20 @@ genfscon sysfs /devices/platform/soc/soc:fingerprint_fpc/power_cfg              
 genfscon sysfs /devices/platform/soc/soc:fingerprint_fpc/request_vreg           u:object_r:vendor_sysfs_fingerprint:s0
 genfscon sysfs /devices/platform/soc/soc:fingerprint_fpc/wakeup_enable          u:object_r:vendor_sysfs_fingerprint:s0
 
+# Haptic
+genfscon sysfs /devices/platform/soc/a8c000.i2c/i2c-2/2-005a/ulevel                  u:object_r:sysfs_vibrator:s0
+
 # LED
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d000/leds/left u:object_r:vendor_sysfs_graphics:s0
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d000/leds/right u:object_r:vendor_sysfs_graphics:s0
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d000/leds/white u:object_r:vendor_sysfs_graphics:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/flashlight/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/led:torch_0/brightness u:object_r:sysfs_torch:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/led:torch_0/max_brightness u:object_r:sysfs_torch:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/led:torch_1/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/led:switch_0/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/led:switch_1/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-05/c440000.qcom,spmi:qcom,pm6150l@5:qcom,leds@d300/leds/led:switch_2/brightness u:object_r:sysfs_torch:s0
 
 # Label wakeup nodes symlinks from /sys/class/wakeup
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-00/c440000.qcom,spmi:qcom,pm6150@0:qcom,power-on@800/wakeup                                                             u:object_r:sysfs_wakeup:s0

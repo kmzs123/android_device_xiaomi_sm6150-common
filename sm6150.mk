@@ -59,8 +59,15 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libaudio-resampler
 
+ifeq ($(TARGET_USES_DOLBY),true)
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    $(LOCAL_PATH)/configs/audio/audio_effects_dolby.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml
+else
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml
+endif
+
+PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio_io_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_io_policy.conf \
     $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
     $(LOCAL_PATH)/configs/audio/audio_tuning_mixer_tavil.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer_tavil.txt
@@ -86,7 +93,13 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml
 
 # Camera
+TARGET_BUILD_DEVICE_AS_WEBCAM := true
+
+$(call inherit-product-if-exists, vendor/xiaomi/miuicamera/config.mk)
+
 $(call soong_config_set_bool,camera,override_format_from_reserved,true)
+$(call soong_config_set,camera,package_name,com.xiaomi.sessionparams.clientName)
+$(call soong_config_set,libcameraservice,ext_lib,//$(LOCAL_PATH):libcameraservice_extension.sm6150)
 
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
@@ -97,10 +110,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml
-
-# Device-specific settings
-PRODUCT_PACKAGES += \
-    XiaomiParts
 
 # Display
 PRODUCT_PACKAGES += \
@@ -114,15 +123,19 @@ PRODUCT_PACKAGES += \
     gralloc.qcom \
     hwcomposer.qcom
 
-PRODUCT_PACKAGES += \
-    disable_configstore
-
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml
+
+# Dolby
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/bin/init.dolby_fix.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.dolby_fix.sh
 
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
+
+# Face unlock
+TARGET_FACE_UNLOCK_SUPPORTED := true
 
 # Fastbootd
 PRODUCT_PACKAGES += \
@@ -138,14 +151,6 @@ PRODUCT_COPY_FILES += \
 # FM
 PRODUCT_PACKAGES += \
     FM2
-
-# Fstab
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/fstab.default:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.default \
-    $(LOCAL_PATH)/rootdir/etc/fstab.default:$(TARGET_COPY_OUT_RAMDISK)/fstab.default \
-    $(LOCAL_PATH)/rootdir/etc/fstab.emmc:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.emmc \
-    $(LOCAL_PATH)/rootdir/etc/fstab.emmc:$(TARGET_COPY_OUT_RAMDISK)/fstab.emmc \
-    $(LOCAL_PATH)/rootdir/etc/fstab.zram:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.zram
 
 # GPS
 PRODUCT_PACKAGES += \
@@ -180,19 +185,11 @@ PRODUCT_PACKAGES += \
     android.hardware.health-service.qti \
     android.hardware.health-service.qti_recovery
 
-# Init scripts
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/init.qcom.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.qcom.rc \
-    $(LOCAL_PATH)/rootdir/etc/init.target.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.target.rc
+# Init
+$(call soong_config_set,libinit,vendor_init_lib,//$(LOCAL_PATH):init_xiaomi_sm6150)
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/bin/init.qcom.post_boot.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qcom.post_boot.sh \
-    $(LOCAL_PATH)/rootdir/bin/init.qcom.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qcom.sh \
-    $(LOCAL_PATH)/rootdir/bin/init.qti.early_init.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qti.early_init.sh
-
-PRODUCT_PACKAGES += \
-    init.qcom.usb.rc \
-    init.qcom.usb.sh
+# ION
+$(call soong_config_set_bool,libion,legacy_impl,true)
 
 # IRSC
 PRODUCT_COPY_FILES += \
@@ -203,8 +200,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
 
 # Kernel
-PRODUCT_ENABLE_UFFD_GC := true
 PRODUCT_SET_DEBUGFS_RESTRICTIONS := true
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
 
 # Lineage Health
 PRODUCT_PACKAGES += \
@@ -217,13 +214,21 @@ PRODUCT_PACKAGES += \
 # Media
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/media/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
-    $(LOCAL_PATH)/configs/media/media_codecs_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2.xml \
     $(LOCAL_PATH)/configs/media/media_codecs_performance_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance_c2.xml \
     $(LOCAL_PATH)/configs/media/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_V1_0.xml
 
+ifeq ($(TARGET_USES_DOLBY),true)
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media/media_codecs_c2_dolby_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2.xml
+else
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media/media_codecs_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2.xml
+endif
+
 # Network
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
+    frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml \
+    frameworks/native/data/etc/android.software.ipsec_tunnel_migration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnel_migration.xml
 
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
@@ -258,8 +263,25 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     librecovery_updater_xiaomi
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc
+# Rootdir
+PRODUCT_PACKAGES += \
+    fstab.default \
+    fstab.default.ramdisk \
+    fstab.emmc \
+    fstab.emmc.ramdisk
+
+PRODUCT_PACKAGES += \
+    init.qcom.post_boot.sh \
+    init.qcom.sh \
+    init.qcom.usb.sh \
+    init.qti.early_init.sh
+
+PRODUCT_PACKAGES += \
+    init.qcom.rc \
+    init.qcom.recovery.rc \
+    init.qcom.usb.rc \
+    init.target.rc \
+    ueventd.qcom.rc
 
 # Sensors
 PRODUCT_COPY_FILES += \
@@ -276,7 +298,7 @@ PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
     bootable/deprecated-ota \
     hardware/google/interfaces \
-    hardware/google/pixel \
+    hardware/google/pixel/power-libperfmgr \
     hardware/lineage/interfaces/power-libperfmgr \
     hardware/qcom-caf/common/libqti-perfd-client \
     hardware/xiaomi \
@@ -318,10 +340,6 @@ PRODUCT_PACKAGES += \
 # Touchscreen
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
-
-# Uevent
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/ueventd.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc
 
 # USB
 PRODUCT_PACKAGES += \
@@ -373,9 +391,3 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     firmware_wlan_mac.bin_symlink \
     firmware_WCNSS_qcom_cfg.ini_symlink
-
-# ZRAM writeback
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.zram.mark_idle_delay_mins=60 \
-    ro.zram.first_wb_delay_mins=1440 \
-    ro.zram.periodic_wb_delay_hours=24
