@@ -1,14 +1,19 @@
 # Camera
 vendor.camera.                     u:object_r:vendor_camera_prop:s0
 persist.camera.                    u:object_r:vendor_camera_prop:s0
+persist.vendor.aiie_capture_dump.  u:object_r:vendor_camera_prop:s0
+persist.vendor.aiie_capture_log.   u:object_r:vendor_camera_prop:s0
+persist.vendor.low.cutoff          u:object_r:vendor_camera_prop:s0
 
 # Fingerprint
 persist.vendor.fingerprint.        u:object_r:vendor_fp_prop:s0
 persist.vendor.sys.fp.             u:object_r:vendor_fp_prop:s0
 ro.boot.fpsensor                   u:object_r:vendor_fp_prop:s0
 ro.hardware.fp                     u:object_r:vendor_fp_prop:s0
-vendor.panel.display               u:object_r:vendor_fp_prop:s0
 vendor.fps_hal.                    u:object_r:vendor_fp_prop:s0
+
+# RIL
+ro.vendor.ril.oem.wifimac          u:object_r:vendor_radio_prop:s0
 
 # Telephony
 ro.vendor.oem.imei                 u:object_r:vendor_deviceid_prop:s0

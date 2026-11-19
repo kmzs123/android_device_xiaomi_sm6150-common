@@ -27,6 +27,15 @@
 /sys/devices/platform/soc/soc:qcom,dsi-display/hbm                   u:object_r:sysfs_hbm:s0
 /sys/devices/platform/soc/soc:qcom,dsi-display/doze_mode             u:object_r:sysfs_doze:s0
 
+# Dolby
+/data/vendor/dolby(/.*)?                                                                            u:object_r:vendor_data_file:s0
+/(odm|vendor/odm)/bin/hw/vendor\.dolby_v3_6\.hardware\.dms360@2\.0-service                          u:object_r:hal_dms_default_exec:s0
+/(odm|vendor/odm)/bin/hw/vendor\.dolby_sp\.hardware\.dmssp@2\.0-service                             u:object_r:hal_dms_default_exec:s0
+/(vendor|odm)/bin/hw/vendor\.dolby_sp\.media\.c2@1\.0-service                                       u:object_r:mediacodec_exec:s0
+
+# Dolby Fix script
+/vendor/bin/init\.dolby_fix\.sh                                      u:object_r:vendor_init-dolby-sh_exec:s0
+
 # Fingerprint
 /dev/fortsense_fp                                                    u:object_r:fingerprint_device:s0
 /dev/goodix_fp                                                       u:object_r:fingerprint_device:s0
@@ -40,6 +49,9 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint-service\.xiaomi u:object_r:hal_fingerprint_default_exec:s0
 /vendor/bin/hw/vendor\.lineage\.livedisplay-service\.xiaomi_sm6150         u:object_r:hal_lineage_livedisplay_qti_exec:s0
 /vendor/bin/hw/vendor\.xiaomi\.hardware\.motor@1\.0-service                u:object_r:hal_motor_default_exec:s0
+
+# Haptic
+/sys/devices/platform/soc/a8c000.i2c/i2c-2/2-005a/ulevel             u:object_r:sysfs_vibrator:s0
 
 # IR
 /dev/spidev[0-9]\.1                                                  u:object_r:lirc_device:s0
@@ -60,6 +72,9 @@
 
 # Remosaic
 /vendor/bin/remosaic_daemon                                          u:object_r:remosaic_daemon_exec:s0
+
+# UFS discard_max_bytes
+/sys/devices/platform/soc/1d84000.ufshc/host0/target0:0:0/0:0:0:0/block/sda/queue/discard_max_bytes u:object_r:vendor_sysfs_mmc_host:s0
 
 # WiFi
 /vendor/bin/nv_mac                                                   u:object_r:vendor_wcnss_service_exec:s0
