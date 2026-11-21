@@ -34,6 +34,11 @@ TARGET_2ND_CPU_VARIANT := cortex-a55
 # A/B
 AB_OTA_UPDATER := false
 
+# ART
+WITH_DEXPREOPT := true
+DEX_PREOPT_DEFAULT := generate-vdex-and-image
+WITH_DEXPREOPT_DEBUG_INFO := false
+
 # Audio
 AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
 
@@ -53,12 +58,20 @@ BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := default
 # HIDL
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
-    hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml
+    hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
+    hardware/dolby/dolby_framework_matrix.xml
 
 DEVICE_MANIFEST_FILE := $(COMMON_PATH)/configs/hidl/manifest.xml
-DEVICE_MANIFEST_FILE += hardware/qcom-caf/sm8150/media/conf_files/sm6150/c2_manifest.xml
+DEVICE_MANIFEST_FILE += \
+    hardware/qcom-caf/sm8150/media/conf_files/sm6150/c2_manifest.xml \
+    hardware/dolby/vendor.dolby.hardware.dms@2.0-service.xml \
+    hardware/dolby/vendor.dolby.media.c2.xml
+
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 ODM_MANIFEST_FILES += $(COMMON_PATH)/configs/hidl/manifest-qva.xml
+
+# HWUI
+HWUI_COMPILE_FOR_PERF := true
 
 # Kernel
 BOARD_KERNEL_BASE := 0x00000000
@@ -67,11 +80,11 @@ BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_SEPARATED_DTBO := true
 
 TARGET_KERNEL_SOURCE := kernel/xiaomi/sm6150
-TARGET_KERNEL_CONFIG := vendor/sdmsteppe-perf_defconfig
 
 BOARD_KERNEL_CMDLINE := console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x880000
 BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom androidboot.console=ttyMSM0
 BOARD_KERNEL_CMDLINE += service_locator.enable=1
+BOARD_KERNEL_CMDLINE += kpti=off \
 BOARD_KERNEL_CMDLINE += lpm_levels.sleep_disabled=1
 BOARD_KERNEL_CMDLINE += loop.max_part=7
 
@@ -121,6 +134,9 @@ TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
+# Compression
+PRODUCT_FS_COMPRESSION := 1
+
 # RIL
 ENABLE_VENDOR_RIL_SERVICE := true
 
@@ -142,7 +158,7 @@ SOONG_CONFIG_NAMESPACES += xiaomiSm6150Vars
 SOONG_CONFIG_xiaomiSm6150Vars += \
     livedisplay_support_anti_flicker \
     livedisplay_support_sunlight_enhancement
-SOONG_CONFIG_xiaomiSm6150Vars_livedisplay_support_anti_flicker ?= false
+SOONG_CONFIG_xiaomiSm6150Vars_livedisplay_support_anti_flicker ?= true
 SOONG_CONFIG_xiaomiSm6150Vars_livedisplay_support_sunlight_enhancement ?= true
 
 # Verified Boot
